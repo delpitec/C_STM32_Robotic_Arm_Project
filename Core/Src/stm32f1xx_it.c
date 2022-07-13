@@ -226,11 +226,11 @@ void EXTI0_IRQHandler(void)
   /* USER CODE END EXTI0_IRQn 0 */
   /* USER CODE BEGIN EXTI0_IRQn 1 */
   __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
-	if (HAL_GPIO_ReadPin(IN_DIR_ENC_1_GPIO_Port, IN_DIR_ENC_1_Pin)){
-		count_1++;
+	if (HAL_GPIO_ReadPin(IN_DIR_ENC_4_GPIO_Port, IN_DIR_ENC_4_Pin)){
+		count_4++;
 	}
 	else{
-		count_1--;
+		count_4--;
 	}
 
   /* USER CODE END EXTI0_IRQn 1 */
@@ -247,11 +247,11 @@ void EXTI1_IRQHandler(void)
   /* USER CODE BEGIN EXTI1_IRQn 1 */
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1);
 
-	if (HAL_GPIO_ReadPin(IN_DIR_ENC_2_GPIO_Port, IN_DIR_ENC_2_Pin)){
-		count_2++;
+	if (HAL_GPIO_ReadPin(IN_DIR_ENC_3_GPIO_Port, IN_DIR_ENC_3_Pin)){
+		count_3++;
 	}
 	else{
-		count_2--;
+		count_3--;
 	}
   /* USER CODE END EXTI1_IRQn 1 */
 }
@@ -266,11 +266,11 @@ void EXTI3_IRQHandler(void)
   /* USER CODE END EXTI3_IRQn 0 */
   /* USER CODE BEGIN EXTI3_IRQn 1 */
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
-	if (HAL_GPIO_ReadPin(IN_DIR_ENC_3_GPIO_Port, IN_DIR_ENC_3_Pin)){
-		count_3++;
+	if (HAL_GPIO_ReadPin(IN_DIR_ENC_2_GPIO_Port, IN_DIR_ENC_2_Pin)){
+		count_2++;
 	}
 	else{
-		count_3--;
+		count_2--;
 	}
   /* USER CODE END EXTI3_IRQn 1 */
 }
@@ -285,11 +285,11 @@ void EXTI4_IRQHandler(void)
   /* USER CODE END EXTI4_IRQn 0 */
   /* USER CODE BEGIN EXTI4_IRQn 1 */
     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
-    if (HAL_GPIO_ReadPin(IN_DIR_ENC_4_GPIO_Port, IN_DIR_ENC_4_Pin)){
-  	    count_4++;
+    if (HAL_GPIO_ReadPin(IN_DIR_ENC_1_GPIO_Port, IN_DIR_ENC_1_Pin)){
+  	    count_1++;
     }
     else{
-	    count_4--;
+	    count_1--;
     }
   /* USER CODE END EXTI4_IRQn 1 */
 }

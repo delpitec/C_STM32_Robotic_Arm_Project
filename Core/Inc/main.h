@@ -32,6 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "bts7960.h"
 
 /* USER CODE END Includes */
 
@@ -56,6 +57,11 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+extern UART_HandleTypeDef huart1;
+extern unsigned int count_1;
+extern unsigned int count_2;
+extern unsigned int count_3;
+extern unsigned int count_4;
 
 /* USER CODE END EFP */
 
