@@ -9,12 +9,13 @@
 
 typedef struct AXIS{
 	BTS2960 shield;
-	unsigned int position;
-
+	GPIO_TypeDef  *HomePort;
+	uint16_t      HomePin;
+	unsigned int *position;
+	unsigned char firstMove;
 }Axis;
 
 void PrintParametersOverSerial(void);
-
 void FindHomePosition(Axis axis);
 
 #endif /* INC_ROBOTFUNCTIONS_H_ */

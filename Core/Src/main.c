@@ -22,7 +22,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 #include "RobotFunctions.h"
 
 /* USER CODE END Includes */
@@ -43,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim1;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -133,17 +133,38 @@ int main(void)
 				OUT_AXIS_4_R_GPIO_Port, OUT_AXIS_4_R_Pin);
 
 
-	Axis Axis1 = {.shield = hBridge1, .position = count_1};
-	Axis Axis2 = {.shield = hBridge2, .position = count_2};
+	Axis Axis1 = {.shield = hBridge1,
+				  .position = &count_1,
+				  .HomePort = IN_AXIS_1_HOME_GPIO_Port,
+				  .HomePin = IN_AXIS_1_HOME_Pin,
+				  .firstMove = COUNTERCLOCKWISE};
+
+	Axis Axis2 = {.shield = hBridge2,
+				  .position = &count_2,
+				  .HomePort = IN_AXIS_2_HOME_GPIO_Port,
+				  .HomePin = IN_AXIS_2_HOME_Pin,
+				  .firstMove = CLOCKWISE};
+
+	Axis Axis3 = {.shield = hBridge3,
+				  .position = &count_3,
+				  .HomePort = IN_AXIS_3_HOME_GPIO_Port,
+				  .HomePin = IN_AXIS_3_HOME_Pin,
+				  .firstMove = CLOCKWISE};
+
+	Axis Axis4 = {.shield = hBridge4,
+				  .position = &count_4,
+				  .HomePort = IN_AXIS_4_HOME_GPIO_Port,
+				  .HomePin = IN_AXIS_4_HOME_Pin,
+				  .firstMove = CLOCKWISE};
 
 	FindHomePosition(Axis1);
 	FindHomePosition(Axis2);
-	// FindHomePosition(axis3);
-	// FindHomePosition(axis4);
+	FindHomePosition(Axis3);
+	FindHomePosition(Axis4);
 
 	while (1) {
 
-		 PrintParametersOverSerial();
+	PrintParametersOverSerial();
 
 /*
 	OutputBTS2960(axis1, i, CLOCKWISE);
@@ -335,8 +356,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(OUT_LED_GPIO_Port, OUT_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, IN_AXIS_4_HOME_Pin|OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin
-                          |OUT_AXIS_2_R_Pin|OUT_AXIS_4_R_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin|OUT_AXIS_2_R_Pin
+                          |OUT_AXIS_4_R_Pin|OUT_AXIS_4_L_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, OUT_AXIS_3_R_Pin|OUT_AXIS_3_L_Pin, GPIO_PIN_RESET);
@@ -366,16 +387,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : IN_AXIS_1_HOME_Pin IN_AXIS_2_HOME_Pin OUT_AXIS_4_L_Pin IN_AXIS_3_HOME_Pin */
-  GPIO_InitStruct.Pin = IN_AXIS_1_HOME_Pin|IN_AXIS_2_HOME_Pin|OUT_AXIS_4_L_Pin|IN_AXIS_3_HOME_Pin;
+  /*Configure GPIO pins : IN_AXIS_1_HOME_Pin IN_AXIS_2_HOME_Pin IN_AXIS_4_HOME_Pin IN_AXIS_3_HOME_Pin */
+  GPIO_InitStruct.Pin = IN_AXIS_1_HOME_Pin|IN_AXIS_2_HOME_Pin|IN_AXIS_4_HOME_Pin|IN_AXIS_3_HOME_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : IN_AXIS_4_HOME_Pin OUT_AXIS_1_R_Pin OUT_AXIS_1_L_Pin OUT_AXIS_2_L_Pin
-                           OUT_AXIS_2_R_Pin OUT_AXIS_4_R_Pin */
-  GPIO_InitStruct.Pin = IN_AXIS_4_HOME_Pin|OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin
-                          |OUT_AXIS_2_R_Pin|OUT_AXIS_4_R_Pin;
+  /*Configure GPIO pins : OUT_AXIS_1_R_Pin OUT_AXIS_1_L_Pin OUT_AXIS_2_L_Pin OUT_AXIS_2_R_Pin
+                           OUT_AXIS_4_R_Pin OUT_AXIS_4_L_Pin */
+  GPIO_InitStruct.Pin = OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin|OUT_AXIS_2_R_Pin
+                          |OUT_AXIS_4_R_Pin|OUT_AXIS_4_L_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

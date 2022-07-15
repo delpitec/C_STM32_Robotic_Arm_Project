@@ -14,41 +14,49 @@ void InitBTS2960(BTS2960 *shieldName, __IO uint32_t *shieldPWMRegAddress,
 }
 
 void SetOutputBTS2960(BTS2960 shieldName, uint16_t value, MotorRotation rotation){
-		if(rotation == CLOCKWISE){
-			HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 0);
-			HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 1);
-		}
-		else if(rotation == COUNTERCLOCKWISE){
-			HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 1);
-			HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 0);
-		}
-		else{
-			return;
-		}
+	if(rotation == CLOCKWISE){
+		HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 1);
+		HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 0);
+	}
+	else if(rotation == COUNTERCLOCKWISE){
+		HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 0);
+		HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 1);
+	}
+	else{
+		return;
+	}
 	*shieldName.ShieldPWMRegAddres = value;
 }
 
-void StartRampBTS2960(BTS2960 shieldName, uint16_t value, MotorRotation rotation, uint16_t millisecondsStep){
+void SetOutputWithRampBTS2960(BTS2960 shieldName, uint16_t newValue, MotorRotation rotation, uint16_t millisecondsStep){
+	if(rotation == CLOCKWISE){
+		HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 1);
+		HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 0);
+	}
+	else if(rotation == COUNTERCLOCKWISE){
+		HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 0);
+		HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 1);
+	}
+	else{
+		return;
+	}
 
-	if (*shieldName.ShieldPWMRegAddres == 0){
-		if(rotation == CLOCKWISE){
-			HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 0);
-			HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 1);
-		}
-		else if(rotation == COUNTERCLOCKWISE){
-			HAL_GPIO_WritePin(shieldName.ShieldPortLeft, shieldName.ShieldPinLeft, 1);
-			HAL_GPIO_WritePin(shieldName.ShieldPortRight, shieldName.ShieldPinRight, 0);
-		}
-		else{
-			return;
-		}
-		for (uint16_t i = 0; i < value; i++){
-			*shieldName.ShieldPWMRegAddres = i;
+	if (newValue > *shieldName.ShieldPWMRegAddres){
+		while(*shieldName.ShieldPWMRegAddres < newValue){
+			*shieldName.ShieldPWMRegAddres++;
 			HAL_Delay(millisecondsStep);
 		}
 	}
+	else if (newValue < *shieldName.ShieldPWMRegAddres){
+		while(*shieldName.ShieldPWMRegAddres > newValue){
+			*shieldName.ShieldPWMRegAddres--;
+			HAL_Delay(millisecondsStep);
+		}
+	}
+	else{
+		;
+	}
 }
-
 
 void StopBTS2960(BTS2960 shieldName){
 	*shieldName.ShieldPWMRegAddres = 0;
