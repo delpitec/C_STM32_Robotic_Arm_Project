@@ -1,35 +1,47 @@
 #include "RobotFunctions.h"
 
 void FindHomePosition(Axis axis){
-
-/*while(1){
-			SetOutputBTS2960(axis.shield, 60, COUNTERCLOCKWISE);
-			HAL_Delay(2000);
-			StopBTS2960(axis.shield);
-			HAL_Delay(2000);
-			SetOutputBTS2960(axis.shield, 60, CLOCKWISE);
-			HAL_Delay(2000);
-			StopBTS2960(axis.shield);
-			HAL_Delay(2000);
-	}
-*/
-	SetOutputBTS2960(axis.shield, 60, axis.firstMove);
+	SetOutputBTS2960(axis.shield, axis.minSpeed, axis.firstMove);
 	while (HAL_GPIO_ReadPin(axis.HomePort, axis.HomePin)){
 		PrintParametersOverSerial();
 	}
 
 	StopBTS2960(axis.shield);
-    HAL_Delay(1000);
+    HAL_Delay(1500);
 
-    SetOutputBTS2960(axis.shield, 60, !axis.firstMove);
+    *axis.position = 0;
+
+    SetOutputBTS2960(axis.shield, axis.minSpeed, !axis.firstMove);
     while (!HAL_GPIO_ReadPin(axis.HomePort, axis.HomePin)){
 		PrintParametersOverSerial();
 	}
 
     StopBTS2960(axis.shield);
     HAL_Delay(1000);
-    HAL_GPIO_TogglePin(OUT_LED_GPIO_Port, OUT_LED_Pin);
-    *axis.position = 0;
+
+}
+
+void MoveToPosition(Axis axis, unsigned int setPoint){
+
+	long int error = *axis.position - setPoint;
+
+	if (error < 0){
+		SetOutputBTS2960(axis.shield, axis.minSpeed, !axis.firstMove);
+		while (*axis.position < setPoint){
+			PrintParametersOverSerial();
+		}
+		StopBTS2960(axis.shield);
+	}
+	else if (error > 0){
+		SetOutputBTS2960(axis.shield, axis.minSpeed, axis.firstMove);
+		while (*axis.position > setPoint){
+			PrintParametersOverSerial();
+		}
+		StopBTS2960(axis.shield);
+	}
+	else{
+		;
+	}
 }
 
 void PrintParametersOverSerial(void){

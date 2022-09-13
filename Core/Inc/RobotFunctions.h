@@ -13,9 +13,18 @@ typedef struct AXIS{
 	uint16_t      HomePin;
 	unsigned int *position;
 	unsigned char firstMove;
+	unsigned int minSpeed;
 }Axis;
 
-void PrintParametersOverSerial(void);
+typedef struct SETPOINT{
+	unsigned int Axis1;
+	unsigned int Axis2;
+	unsigned int Axis3;
+	unsigned int Axis4;
+}SetPoint;
+
 void FindHomePosition(Axis axis);
+void MoveToPosition(Axis axis, unsigned int setPoint);
+void PrintParametersOverSerial(void);
 
 #endif /* INC_ROBOTFUNCTIONS_H_ */
