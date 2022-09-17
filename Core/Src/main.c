@@ -160,36 +160,37 @@ int main(void)
 				  .firstMove = COUNTERCLOCKWISE,
 				  .minSpeed = 70};
 
-
-	FindHomePosition(Axis1);
-	FindHomePosition(Axis2);
-	FindHomePosition(Axis3);
-	FindHomePosition(Axis4);
+	//FindHomePosition(Axis4);
+	//FindHomePosition(Axis3);
+	//FindHomePosition(Axis2);
+	//FindHomePosition(Axis1);
 
 	//Axis1: Max: 60000 | Axis2: Max: 50000 | Axis 3: Max: 12000 | Axis4: 20000
 	SetPoint RobotSetPoint = {30000, 25000, 6000, 10000};
 
-	MoveToPosition(Axis1, RobotSetPoint.Axis1);
-	MoveToPosition(Axis2, RobotSetPoint.Axis2);
-	MoveToPosition(Axis3, RobotSetPoint.Axis3);
-	MoveToPosition(Axis4, RobotSetPoint.Axis4);
+	//MoveToPosition(Axis1, RobotSetPoint.Axis1);
+	//MoveToPosition(Axis2, RobotSetPoint.Axis2);
+	//MoveToPosition(Axis3, RobotSetPoint.Axis3);
+	///MoveToPosition(Axis4, RobotSetPoint.Axis4);
 
 	RobotSetPoint.Axis1 = 15000;
 	RobotSetPoint.Axis2 = 12000;
 	RobotSetPoint.Axis3 = 6000;
 	RobotSetPoint.Axis4 = 5000;
 
-	MoveToPosition(Axis1, RobotSetPoint.Axis1);
-	MoveToPosition(Axis2, RobotSetPoint.Axis2);
-	MoveToPosition(Axis3, RobotSetPoint.Axis3);
-	MoveToPosition(Axis4, RobotSetPoint.Axis4);
+	//MoveToPosition(Axis1, RobotSetPoint.Axis1);
+	//MoveToPosition(Axis2, RobotSetPoint.Axis2);
+	//MoveToPosition(Axis3, RobotSetPoint.Axis3);
+	///MoveToPosition(Axis4, RobotSetPoint.Axis4);
 
 
 	//SetOutputBTS2960(Axis4.shield, 70, COUNTERCLOCKWISE);
 
 	while (1) {
 
-		PrintParametersOverSerial();
+		//PrintParametersOverSerial();
+
+		MoveToPositionPID(Axis1, 1000);
 
 
 
