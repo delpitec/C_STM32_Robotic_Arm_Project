@@ -8,7 +8,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max)
 void FindHomePosition(Axis axis){
 	SetOutputBTS2960(axis.shield, axis.minSpeed, axis.firstMove);
 	while (HAL_GPIO_ReadPin(axis.HomePort, axis.HomePin)){
-		PrintParametersOverSerial();
+		;
 	}
 
 	StopBTS2960(axis.shield);
@@ -18,7 +18,7 @@ void FindHomePosition(Axis axis){
 
     SetOutputBTS2960(axis.shield, axis.minSpeed, !axis.firstMove);
     while (!HAL_GPIO_ReadPin(axis.HomePort, axis.HomePin)){
-		PrintParametersOverSerial();
+		;
 	}
 
     StopBTS2960(axis.shield);
@@ -33,14 +33,14 @@ void MoveToPosition(Axis axis, unsigned int setPoint){
 	if (error < 0){
 		SetOutputBTS2960(axis.shield, axis.minSpeed, !axis.firstMove);
 		while (*axis.position < setPoint){
-			PrintParametersOverSerial();
+			;
 		}
 		StopBTS2960(axis.shield);
 	}
 	else if (error > 0){
 		SetOutputBTS2960(axis.shield, axis.minSpeed, axis.firstMove);
 		while (*axis.position > setPoint){
-			PrintParametersOverSerial();
+			;
 		}
 		StopBTS2960(axis.shield);
 	}
@@ -49,137 +49,109 @@ void MoveToPosition(Axis axis, unsigned int setPoint){
 	}
 }
 
-void PrintTestPID(int var1, int var2, int var3, int var4, int var5){
-    static char UartTX[100] = {0};
-    const char CLRSCR[] = "\033[0H\033[0J";  // Clear terminal
-
-	//HAL_UART_Transmit(&huart1, (unsigned char *)CLRSCR, strlen((const char *)CLRSCR), 100);
-
-	sprintf((char *)UartTX,
-	  	   "EN1: % 06d | "
-	  	   "ERR: % 04d | "
-		   "PID: % 04d | "
-		   "  P: % 04d | "
-		   "  I: % 04d | "
-		   "TIM: % 04d\n\r",
-			count_1,
-			var1,
-			var2,
-			var3,
-			var4,
-			var5
-	);
-
-	HAL_UART_Transmit(&huart1, (unsigned char *)UartTX, strlen((const char *)UartTX), 500);
-	HAL_Delay(100);
-
-}
-
-
+// Valores de 0 até MAX count_x
 void MoveToPositionPID(Axis axis, unsigned int setPoint){
 
-	// Check if setPoint is normilized
-	if (setPoint > 1000){
-		return;
-	}
-
+	static unsigned int  lastPosition = 0;
 	static unsigned long timeStamp = 0;
-	static long int lastPosition = 0;
-	static float kp = 0.6;
-	static float ki = 1.0;
-	static float kd = 0.0;
-	static float P = 0.0;
-	static float I = 0.0;
-	static float D = 0.0;
-	static int PID = 0.0;
+	static int P_error = 0;
+	static int I_error = 0;
+	static int D_error = 0;
 
-	float error;
-	float deltaTime;
+	const float kp = 0.7;
+	const float ki = 0.65;
+	const float kd = 0.0;
 
-	// normalized error (0 to 1000)
-	error = setPoint - map(*axis.position, 0, 60000, 0, 1000);
+	int output = 0;
+	int PID = 0;
+	int error = 0;
+	float elapsedTime = 0.0;
 
+	// set error (normalized = 0 to 1000)
+	error = map(setPoint, 0, 60000, 0, 1000) - map(*axis.position, 0, 60000, 0, 1000);
 
-	deltaTime = (HAL_GetTick() - timeStamp)/1000.0;
-	timeStamp = HAL_GetTick();
-
-	P = error * kp;
-	I = (I + (error * ki)) * deltaTime;
-	D = (lastPosition - *axis.position) * kd * deltaTime;
 
 	lastPosition = *axis.position;
 
-	PID = P + I + D;
+	// Time variables refresh
+	elapsedTime = (HAL_GetTick() - timeStamp)/1000.0;
+	timeStamp = HAL_GetTick();
 
-	// Anti wideup
-	if (PID >= 1000){
-		PID = I = 1000;
+	// Refresh PID var errors
+	P_error = error;
+	I_error = I_error + (error * elapsedTime);
+	D_error = (lastPosition - *axis.position) / elapsedTime;
+
+	// Anti wideup (max +/- 1000)
+	if (I_error > 1000){
+		I_error = 1000;
 	}
-	else if (PID <= 0){
-		PID = I = 0;
+	else if (I_error < -1000){
+		I_error = -1000;
+	}
+	else{
+		;
 	}
 
-	PrintTestPID(error, PID, P, I, deltaTime);
+	// Refresh PID controller
+	PID = kp * P_error + ki * I_error + kd * D_error;
 
-	if (PID >= 1000 || PID <= 0){
-		while (1);
+	// Anti wideup (max +/- 1000)
+	if (PID > 1000){
+		PID = 1000;
 	}
-/*
-	if(PID > 0){
-		SetOutputBTS2960(axis.shield, PID, !axis.firstMove);
+	else if (PID < -1000){
+		PID = -1000;
 	}
-	else
-		SetOutputBTS2960(axis.shield, PID, axis.firstMove);
-*/
+	else {
+		;
+	}
 
+	// Normilized output
+	if (PID > 0){
+		output = PID/12;
+		SetOutputBTS2960(axis.shield, output, !axis.firstMove);
+	}
+	else {
+		output = (-1)*(PID/12);
+		SetOutputBTS2960(axis.shield, output, axis.firstMove);
+	}
 
+	PrintParametersOverSerial(error, PID, P_error,I_error, D_error);
 }
 
-
-void PrintParametersOverSerial(void){
-    static char UartTX[100] = {0};
-    const char CLRSCR[] = "\033[0H\033[0J";  // Clear terminal
-
-	//HAL_UART_Transmit(&huart1, (unsigned char *)CLRSCR, strlen((const char *)CLRSCR), 100);
-
-	sprintf((char *)UartTX,
-	  	   "\n\rS1: % 06d H1: %d\n\r"
-	  	   "S2: % 06d H2: %d\n\r"
-		   "S3: % 06d H3: %d\n\r"
-		   "S4: % 06d H4: %d\n\r",
-			count_1, HAL_GPIO_ReadPin(IN_AXIS_1_HOME_GPIO_Port, IN_AXIS_1_HOME_Pin),
-			count_2, HAL_GPIO_ReadPin(IN_AXIS_2_HOME_GPIO_Port, IN_AXIS_2_HOME_Pin),
-			count_3, HAL_GPIO_ReadPin(IN_AXIS_3_HOME_GPIO_Port, IN_AXIS_3_HOME_Pin),
-			count_4, HAL_GPIO_ReadPin(IN_AXIS_4_HOME_GPIO_Port, IN_AXIS_4_HOME_Pin)
-	);
-
-	HAL_UART_Transmit(&huart1, (unsigned char *)UartTX, strlen((const char *)UartTX), 500);
-	HAL_Delay(100);
-
-}
-
-void PrintParametersOverSerialWithOneRandomVar(int var){
-    static char UartTX[100] = {0};
+void PrintParametersOverSerial(int err, int pid, int p,int i, int d){
+    static char UartTX[120] = {0};
     const char CLRSCR[] = "\033[0H\033[0J";  // Clear terminal
 
 	HAL_UART_Transmit(&huart1, (unsigned char *)CLRSCR, strlen((const char *)CLRSCR), 100);
 
 	sprintf((char *)UartTX,
-	  	   "\n\rS1: % 06d H1: %d\n\r"
-	  	   "S2: % 06d H2: %d\n\r"
-		   "S3: % 06d H3: %d\n\r"
-		   "S4: % 06d H4: %d\n\r"
-		   "VA: % 06d \n\r",
-			count_1, HAL_GPIO_ReadPin(IN_AXIS_1_HOME_GPIO_Port, IN_AXIS_1_HOME_Pin),
-			count_2, HAL_GPIO_ReadPin(IN_AXIS_2_HOME_GPIO_Port, IN_AXIS_2_HOME_Pin),
-			count_3, HAL_GPIO_ReadPin(IN_AXIS_3_HOME_GPIO_Port, IN_AXIS_3_HOME_Pin),
-			count_4, HAL_GPIO_ReadPin(IN_AXIS_4_HOME_GPIO_Port, IN_AXIS_4_HOME_Pin),
-			var
+	  	   "\n\r S1: % 06d\n\r"
+	  	   " S2: % 06d\n\r"
+		   " S3: % 06d\n\r"
+		   " S4: % 06d\n\r"
+		   " ER: % 06d\n\r"
+		   "PID: % 05d\n\r"
+		   "  P: % 05d\n\r"
+		   "  I: % 05d\n\r"
+		   "  D: % 05d\n\r",
+			count_1,
+			count_2,
+			count_3,
+			count_4,
+			err,
+			pid,
+			p,
+			i,
+			d
 	);
 
 	HAL_UART_Transmit(&huart1, (unsigned char *)UartTX, strlen((const char *)UartTX), 500);
 	HAL_Delay(100);
 
 }
+
+
 
 

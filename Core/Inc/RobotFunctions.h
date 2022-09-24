@@ -25,9 +25,8 @@ typedef struct SETPOINT{
 
 void FindHomePosition(Axis axis);
 void MoveToPosition(Axis axis, unsigned int setPoint);
-void PrintParametersOverSerial(void);
-void PrintParametersOverSerialWithOneRandomVar(int var);
-void PrintParametersOverSerialWithTwoRandomVar(int var1, int var2);
+void MoveToPositionPID(Axis axis, unsigned int setPoint);
+void PrintParametersOverSerial(int err, int pid, int p,int i, int d);
 
 
 #endif /* INC_ROBOTFUNCTIONS_H_ */

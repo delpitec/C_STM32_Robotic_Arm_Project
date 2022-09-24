@@ -163,7 +163,7 @@ int main(void)
 	//FindHomePosition(Axis4);
 	//FindHomePosition(Axis3);
 	//FindHomePosition(Axis2);
-	//FindHomePosition(Axis1);
+	FindHomePosition(Axis1);
 
 	//Axis1: Max: 60000 | Axis2: Max: 50000 | Axis 3: Max: 12000 | Axis4: 20000
 	SetPoint RobotSetPoint = {30000, 25000, 6000, 10000};
@@ -188,9 +188,7 @@ int main(void)
 
 	while (1) {
 
-		//PrintParametersOverSerial();
-
-		MoveToPositionPID(Axis1, 1000);
+	MoveToPositionPID(Axis1, 30000);
 
 
 
