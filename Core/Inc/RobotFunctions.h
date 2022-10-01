@@ -11,9 +11,12 @@ typedef struct AXIS{
 	BTS2960 shield;
 	GPIO_TypeDef  *HomePort;
 	uint16_t      HomePin;
-	unsigned int *position;
+	unsigned int  *position;
+	unsigned int  lastPosition;
 	unsigned char firstMove;
-	unsigned int minSpeed;
+	unsigned int  minSpeed;
+	unsigned int  maxSpeed;
+	unsigned int  currentSpeed;
 }Axis;
 
 typedef struct SETPOINT{
@@ -26,6 +29,7 @@ typedef struct SETPOINT{
 void FindHomePosition(Axis axis);
 void MoveToPosition(Axis axis, unsigned int setPoint);
 void MoveToPositionPID(Axis axis, unsigned int setPoint);
+int SetSpeedPID(Axis axis, unsigned int setPoint);
 void PrintParametersOverSerial(int err, int pid, int p,int i, int d);
 
 

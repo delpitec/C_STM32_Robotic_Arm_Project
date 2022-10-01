@@ -58,10 +58,15 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 extern UART_HandleTypeDef huart1;
-extern unsigned int count_1;
-extern unsigned int count_2;
-extern unsigned int count_3;
-extern unsigned int count_4;
+
+extern unsigned int enc_1;
+extern unsigned int enc_2;
+extern unsigned int enc_3;
+extern unsigned int enc_4;
+extern unsigned int enc_1_speed;
+extern unsigned int enc_2_speed;
+extern unsigned int enc_3_speed;
+extern unsigned int enc_4_speed;
 
 /* USER CODE END EFP */
 

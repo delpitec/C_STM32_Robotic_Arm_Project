@@ -42,10 +42,16 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-	unsigned int count_1 = 0;
-	unsigned int count_2 = 0;
-	unsigned int count_3 = 0;
-	unsigned int count_4 = 0;
+
+	unsigned int enc_1 = 0;
+	unsigned int enc_2 = 0;
+	unsigned int enc_3 = 0;
+	unsigned int enc_4 = 0;
+	unsigned int enc_1_speed = 0;
+	unsigned int enc_2_speed = 0;
+	unsigned int enc_3_speed = 0;
+	unsigned int enc_4_speed = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,7 +65,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -227,10 +233,10 @@ void EXTI0_IRQHandler(void)
   /* USER CODE BEGIN EXTI0_IRQn 1 */
   __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 	if (HAL_GPIO_ReadPin(IN_DIR_ENC_4_GPIO_Port, IN_DIR_ENC_4_Pin)){
-		count_4++;
+		enc_4++;
 	}
 	else{
-		count_4--;
+		enc_4--;
 	}
 
   /* USER CODE END EXTI0_IRQn 1 */
@@ -248,10 +254,10 @@ void EXTI1_IRQHandler(void)
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1);
 
 	if (HAL_GPIO_ReadPin(IN_DIR_ENC_3_GPIO_Port, IN_DIR_ENC_3_Pin)){
-		count_3++;
+		enc_3++;
 	}
 	else{
-		count_3--;
+		enc_3--;
 	}
   /* USER CODE END EXTI1_IRQn 1 */
 }
@@ -267,10 +273,10 @@ void EXTI3_IRQHandler(void)
   /* USER CODE BEGIN EXTI3_IRQn 1 */
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
 	if (HAL_GPIO_ReadPin(IN_DIR_ENC_2_GPIO_Port, IN_DIR_ENC_2_Pin)){
-		count_2++;
+		enc_2++;
 	}
 	else{
-		count_2--;
+		enc_2--;
 	}
   /* USER CODE END EXTI3_IRQn 1 */
 }
@@ -286,12 +292,46 @@ void EXTI4_IRQHandler(void)
   /* USER CODE BEGIN EXTI4_IRQn 1 */
     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
     if (HAL_GPIO_ReadPin(IN_DIR_ENC_1_GPIO_Port, IN_DIR_ENC_1_Pin)){
-  	    count_1++;
+  	    enc_1++;
     }
     else{
-	    count_1--;
+	    enc_1--;
     }
   /* USER CODE END EXTI4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+
+	// timerInterruptCompensatione * interrupt period = 1
+	const unsigned int timerInterruptCompensation = 5;
+
+	static unsigned int enc_1_last_pos = 0;
+	static unsigned int enc_2_last_pos = 0;
+	static unsigned int enc_3_last_pos = 0;
+	static unsigned int enc_4_last_pos = 0;
+
+	__HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
+	HAL_GPIO_TogglePin(OUT_LED_GPIO_Port, OUT_LED_Pin);
+
+	enc_1_speed = (enc_1 - enc_1_last_pos) * timerInterruptCompensation;
+	enc_2_speed = (enc_2 - enc_2_last_pos) * timerInterruptCompensation;
+	enc_3_speed = (enc_3 - enc_3_last_pos) * timerInterruptCompensation;
+	enc_4_speed = (enc_4 - enc_4_last_pos) * timerInterruptCompensation;
+
+	enc_1_last_pos = enc_1;
+	enc_2_last_pos = enc_2;
+	enc_3_last_pos = enc_3;
+	enc_4_last_pos = enc_4;
+
+  /* USER CODE END TIM2_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
