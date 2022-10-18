@@ -6,17 +6,16 @@
 #include <string.h> // tratamento de string
 #include "main.h"
 #include "bts7960.h"
+#include "PID.h"
 
 typedef struct AXIS{
 	BTS2960 shield;
 	GPIO_TypeDef  *HomePort;
 	uint16_t      HomePin;
+	PID 		  pidPos;
 	unsigned int  *position;
-	unsigned int  lastPosition;
 	unsigned char firstMove;
 	unsigned int  minSpeed;
-	unsigned int  maxSpeed;
-	unsigned int  currentSpeed;
 }Axis;
 
 typedef struct SETPOINT{
@@ -28,9 +27,8 @@ typedef struct SETPOINT{
 
 void FindHomePosition(Axis axis);
 void MoveToPosition(Axis axis, unsigned int setPoint);
-void MoveToPositionPID(Axis axis, unsigned int setPoint);
-int SetSpeedPID(Axis axis, unsigned int setPoint);
-void PrintParametersOverSerial(int err, int pid, int p,int i, int d);
+void MoveToPositionPID(Axis *axis, unsigned int setPoint);
+
 
 
 #endif /* INC_ROBOTFUNCTIONS_H_ */

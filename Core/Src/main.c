@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "RobotFunctions.h"
+#include "PID.h"
 
 /* USER CODE END Includes */
 
@@ -136,11 +137,26 @@ int main(void)
 				OUT_AXIS_4_R_GPIO_Port, OUT_AXIS_4_R_Pin);
 
 	Axis Axis1 = {.shield = hBridge1,
-				  .position = &enc_1,
 				  .HomePort = IN_AXIS_1_HOME_GPIO_Port,
 				  .HomePin = IN_AXIS_1_HOME_Pin,
+				  .pidPos  = {.kp = 0.70,
+				  		     .ki = 0.65,
+				  		     .kd = 0.30,
+				  	         .minNormilizedValue = 0,
+				  		     .maxNormilizedValue = 1000,
+				  		     .minProcessVariableValue = 0,
+				  	         .maxProcessVariableValue = 60000,
+				  		     .minSetPointValue = 0,
+				  		     .maxSetPointValue = 60000,
+				  		     .P_error = 0,
+				  		     .I_error = 0,
+				  		     .D_error = 0,
+				  		     .lastProcessVariableValue = 0,
+				  		     .timeStamp = 0},
+				  .position = &enc_1,
 				  .firstMove = COUNTERCLOCKWISE,
 				  .minSpeed = 60};
+
 
 	Axis Axis2 = {.shield = hBridge2,
 				  .position = &enc_2,
@@ -191,10 +207,7 @@ int main(void)
 
 	while (1) {
 
-	MoveToPositionPID(Axis1, 50000);
-
-
-
+		//MoveToPositionPID(&Axis1, 30000);
 
 
 /*

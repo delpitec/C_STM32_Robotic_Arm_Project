@@ -47,7 +47,7 @@
 	unsigned int enc_2 = 0;
 	unsigned int enc_3 = 0;
 	unsigned int enc_4 = 0;
-	unsigned int enc_1_speed = 0;
+	unsigned int enc_1_speed = 0;  // Max speed: 32000
 	unsigned int enc_2_speed = 0;
 	unsigned int enc_3_speed = 0;
 	unsigned int enc_4_speed = 0;
