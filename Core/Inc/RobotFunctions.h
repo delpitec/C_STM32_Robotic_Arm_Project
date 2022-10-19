@@ -13,6 +13,8 @@ typedef struct AXIS{
 	GPIO_TypeDef  *HomePort;
 	uint16_t      HomePin;
 	PID 		  pidPos;
+	PID 		  pidSpeed;
+	int           *speed;
 	unsigned int  *position;
 	unsigned char firstMove;
 	unsigned int  minSpeed;

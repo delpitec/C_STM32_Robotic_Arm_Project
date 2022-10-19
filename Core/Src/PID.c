@@ -45,18 +45,17 @@ void PrintParametersOverSerial(int err, int pid, int p,int i, int d){
 
 }
 
-int PIDController(PID *pid, unsigned int position, unsigned int setPoint){
+int PIDController(PID *pid, int sensedOutput, int setPoint){
 
 	static unsigned int  lastPosition = 0;
 	static unsigned long timeStamp = 0;
 
 	int PID = 0;
 	int error = 0;
-	unsigned int currentPosition = map(position, pid->minProcessVariableValue, pid->maxProcessVariableValue, pid->minNormilizedValue, pid->maxNormilizedValue);
 	float elapsedTime = 0.0;
 
 	// set error (normalized = 0 to 1000)
-	error = map(setPoint, pid->minSetPointValue, pid->maxSetPointValue, pid->minNormilizedValue, pid->maxNormilizedValue) - currentPosition;
+	error = setPoint - sensedOutput;
 
 	// Time variables refresh
 	elapsedTime = (HAL_GetTick() - timeStamp)/1000.0;
@@ -65,14 +64,14 @@ int PIDController(PID *pid, unsigned int position, unsigned int setPoint){
 	// Refresh PID var errors
 	pid->P_error = error;
 	pid->I_error = (pid->I_error + (error * elapsedTime));
-	pid->D_error = (int)((currentPosition - lastPosition)) / elapsedTime;
+	pid->D_error = (sensedOutput - lastPosition) / elapsedTime;
 
 	// Anti wideup (max +/- 1000)
-	if (pid->I_error > 1000){
-		pid->I_error = 1000;
+	if (pid->I_error > pid->maxControl){
+		pid->I_error = pid->maxControl;
 	}
-	else if (pid->I_error < -1000){
-		pid->I_error = -1000;
+	else if (pid->I_error < pid->minControl){
+		pid->I_error = pid->minControl;
 	}
 	else{
 		;
@@ -82,14 +81,14 @@ int PIDController(PID *pid, unsigned int position, unsigned int setPoint){
 	PID = pid->kp * pid->P_error + pid->ki * pid->I_error + pid->kd * pid->D_error;
 
 	// next loop variable refresh
-	lastPosition = currentPosition;
+	lastPosition = sensedOutput;
 
 	// Anti wideup (max +/- 1000)
-	if (PID > 1000){
-		PID = 1000;
+	if (PID > pid->maxControl){
+		PID = pid->maxControl;
 	}
-	else if (PID < -1000){
-		PID = -1000;
+	else if (PID < pid->minControl){
+		PID = pid->minControl;
 	}
 	else {
 		;

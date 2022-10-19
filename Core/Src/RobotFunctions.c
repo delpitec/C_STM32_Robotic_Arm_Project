@@ -53,9 +53,12 @@ void MoveToPositionPID(Axis *axis, unsigned int setPoint){
 	int pidOutput = 0;
 	int output = 0;
 
-	pidOutput = PIDController(&axis->pidPos, *axis->position, setPoint);
+	int mappedSetPoint = map(setPoint, axis->pidPos.minProcessVariable, axis->pidPos.maxProcessVariable, axis->pidPos.minNormilized, axis->pidPos.maxNormilized);
+	int mappedAxisPosition = map(*axis->position, axis->pidPos.minProcessVariable, axis->pidPos.maxProcessVariable, axis->pidPos.minNormilized, axis->pidPos.maxNormilized);
+	pidOutput = PIDController(&axis->pidPos, mappedAxisPosition, mappedSetPoint);
 
-	//PidController(&axis.pid, pidOutput + 1000, enc_1_speed);
+	//int mappedSpeed = map(*axis->speed, axis->pidSpeed.minProcessVariable, axis->pidSpeed.maxProcessVariable, -1000, 1000);
+	//pidOutput = PIDController(&axis->pidPos, mappedSpeed, pidOutput);
 
 	// Normilized output
 	if (pidOutput > 0){
@@ -63,7 +66,7 @@ void MoveToPositionPID(Axis *axis, unsigned int setPoint){
 		SetOutputBTS2960(axis->shield, output, !axis->firstMove);
 	}
 	else {
-		output = pidOutput/12;
+		output = ((-1)*(pidOutput))/12;
 		SetOutputBTS2960(axis->shield, output, axis->firstMove);
 	}
 

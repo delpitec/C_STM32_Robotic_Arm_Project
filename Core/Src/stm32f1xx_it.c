@@ -47,7 +47,8 @@
 	unsigned int enc_2 = 0;
 	unsigned int enc_3 = 0;
 	unsigned int enc_4 = 0;
-	unsigned int enc_1_speed = 0;  // Max speed: 32000
+	int enc_1_speed = 0;  // Max speed: 32000
+	int enc_1_signal = 1;
 	unsigned int enc_2_speed = 0;
 	unsigned int enc_3_speed = 0;
 	unsigned int enc_4_speed = 0;
@@ -293,9 +294,11 @@ void EXTI4_IRQHandler(void)
     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
     if (HAL_GPIO_ReadPin(IN_DIR_ENC_1_GPIO_Port, IN_DIR_ENC_1_Pin)){
   	    enc_1++;
+  	    enc_1_signal = 1;
     }
     else{
 	    enc_1--;
+	    enc_1_signal = -1;
     }
   /* USER CODE END EXTI4_IRQn 1 */
 }
@@ -318,7 +321,7 @@ void TIM2_IRQHandler(void)
 	__HAL_TIM_CLEAR_FLAG(&htim2, TIM_FLAG_UPDATE);
 	HAL_GPIO_TogglePin(OUT_LED_GPIO_Port, OUT_LED_Pin);
 
-	enc_1_speed = (enc_1 - enc_1_last_pos) * timerInterruptCompensation;
+	enc_1_speed = enc_1_signal * (enc_1 - enc_1_last_pos) * timerInterruptCompensation;
 	enc_2_speed = (enc_2 - enc_2_last_pos) * timerInterruptCompensation;
 	enc_3_speed = (enc_3 - enc_3_last_pos) * timerInterruptCompensation;
 	enc_4_speed = (enc_4 - enc_4_last_pos) * timerInterruptCompensation;

@@ -142,17 +142,32 @@ int main(void)
 				  .pidPos  = {.kp = 0.70,
 				  		     .ki = 0.65,
 				  		     .kd = 0.30,
-				  	         .minNormilizedValue = 0,
-				  		     .maxNormilizedValue = 1000,
-				  		     .minProcessVariableValue = 0,
-				  	         .maxProcessVariableValue = 60000,
-				  		     .minSetPointValue = 0,
-				  		     .maxSetPointValue = 60000,
+				  	         .minNormilized = 0,
+				  		     .maxNormilized = 1000,
+				  		     .minProcessVariable = 0,
+				  	         .maxProcessVariable = 60000,
+				  		     .minControl = -1000,
+				  		     .maxControl = 1000,
 				  		     .P_error = 0,
 				  		     .I_error = 0,
 				  		     .D_error = 0,
 				  		     .lastProcessVariableValue = 0,
 				  		     .timeStamp = 0},
+				  .pidSpeed  = {.kp = 0.70,
+				    		    .ki = 0.65,
+							  	.kd = 0.30,
+							  	.minNormilized = 0,
+							  	.maxNormilized = 1000,
+							  	.minProcessVariable = 0,
+							  	.maxProcessVariable = 60000,
+							  	.minControl = -1000,
+							  	.maxControl = 1000,
+							  	.P_error = 0,
+							  	.I_error = 0,
+							  	.D_error = 0,
+							  	.lastProcessVariableValue = 0,
+							  	.timeStamp = 0},
+				  .speed = &enc_1_speed,
 				  .position = &enc_1,
 				  .firstMove = COUNTERCLOCKWISE,
 				  .minSpeed = 60};
@@ -207,7 +222,7 @@ int main(void)
 
 	while (1) {
 
-		//MoveToPositionPID(&Axis1, 30000);
+		MoveToPositionPID(&Axis1, 30000);
 
 
 /*
