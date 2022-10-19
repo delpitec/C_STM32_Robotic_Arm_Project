@@ -20,11 +20,11 @@ void PrintParametersOverSerial(int err, int pid, int p,int i, int d){
 		   "E2S: % 06d\n\r"
 		   "E3S: % 06d\n\r"
 		   "E4S: % 06d\n\r"
-		   */"ER:% 06d\n\r "
+		   */"ER:% 06d\n\r"
 		   "PID: % 05d "
 		   "  P: % 05d "
 		   "  I: % 05d "
-		   "  D: % 05d \n\r",
+		   "  D: % 05d",
 			enc_1,
 			enc_2,
 			enc_3,
@@ -41,14 +41,11 @@ void PrintParametersOverSerial(int err, int pid, int p,int i, int d){
 	);
 
 	HAL_UART_Transmit(&huart1, (unsigned char *)UartTX, strlen((const char *)UartTX), 500);
-	HAL_Delay(100);
+	HAL_Delay(50);
 
 }
 
 int PIDController(PID *pid, int sensedOutput, int setPoint){
-
-	static unsigned int  lastPosition = 0;
-	static unsigned long timeStamp = 0;
 
 	int PID = 0;
 	int error = 0;
@@ -58,13 +55,13 @@ int PIDController(PID *pid, int sensedOutput, int setPoint){
 	error = setPoint - sensedOutput;
 
 	// Time variables refresh
-	elapsedTime = (HAL_GetTick() - timeStamp)/1000.0;
-	timeStamp = HAL_GetTick();
+	elapsedTime = (HAL_GetTick() - pid->timeStamp)/1000.0;
+	pid->timeStamp = HAL_GetTick();
 
 	// Refresh PID var errors
 	pid->P_error = error;
 	pid->I_error = (pid->I_error + (error * elapsedTime));
-	pid->D_error = (sensedOutput - lastPosition) / elapsedTime;
+	pid->D_error = (sensedOutput - pid->lastSensedOutput) / elapsedTime;
 
 	// Anti wideup (max +/- 1000)
 	if (pid->I_error > pid->maxControl){
@@ -78,10 +75,10 @@ int PIDController(PID *pid, int sensedOutput, int setPoint){
 	}
 
 	// Refresh PID controller
-	PID = pid->kp * pid->P_error + pid->ki * pid->I_error + pid->kd * pid->D_error;
+	PID = (pid->kp * pid->P_error) + (pid->ki * pid->I_error) + (pid->kd * pid->D_error);
 
 	// next loop variable refresh
-	lastPosition = sensedOutput;
+	pid->lastSensedOutput = sensedOutput;
 
 	// Anti wideup (max +/- 1000)
 	if (PID > pid->maxControl){
@@ -94,7 +91,7 @@ int PIDController(PID *pid, int sensedOutput, int setPoint){
 		;
 	}
 
-	PrintParametersOverSerial(error, PID, pid->P_error ,pid->I_error, pid->D_error);
+	PrintParametersOverSerial(error, PID, (pid->kp * pid->P_error) ,(pid->ki * pid->I_error), (pid->kd * pid->D_error));
 
 	return PID;
 }

@@ -25,7 +25,7 @@ typedef struct PID{
 	int                P_error;
 	int                I_error;
 	int                D_error;
-	unsigned int  	   lastProcessVariableValue;
+	unsigned int  	   lastSensedOutput;
 	unsigned long 	   timeStamp;
 }PID;
 
