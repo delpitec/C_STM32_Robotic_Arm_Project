@@ -139,34 +139,36 @@ int main(void)
 	Axis Axis1 = {.shield = hBridge1,
 				  .HomePort = IN_AXIS_1_HOME_GPIO_Port,
 				  .HomePin = IN_AXIS_1_HOME_Pin,
-				  .pidPos  = {.kp = 1.0, // 0.70
-				  		     .ki = 0.00,  // 0.65
-				  		     .kd = 0.00,  // 0.30
-				  	         .minNormilized = 0,
-				  		     .maxNormilized = 1000,
-				  		     .minProcessVariable = 0,
-				  	         .maxProcessVariable = 60000,
-				  		     .minControl = -1000,
-				  		     .maxControl = 1000,
-				  		     .P_error = 0,
-				  		     .I_error = 0,
-				  		     .D_error = 0,
-				  		     .lastSensedOutput = 0,
-				  		     .timeStamp = 0},
-				  .pidSpeed  = {.kp = 0.8,
-				    		    .ki = 0.7,
-							  	.kd = 0.00,
-							  	.minNormilized = 0,
-							  	.maxNormilized = 1000,
-							  	.minProcessVariable = -32000,
-							  	.maxProcessVariable = 32000,
-							  	.minControl = -1000,
-							  	.maxControl = 1000,
-							  	.P_error = 0,
-							  	.I_error = 0,
-							  	.D_error = 0,
-							  	.lastSensedOutput = 0,
-							  	.timeStamp = 0},
+				  .pidPos   =  {.kp = 1.0, // 0.70
+				  		       .ki = 0.00,  // 0.65
+				  		       .kd = 0.00,  // 0.30
+				  	           .minNormilized = 0,
+				  		       .maxNormilized = 1000,
+				  		       .minProcessVariable = 0,
+				  	           .maxProcessVariable = 60000,
+				  		       .minControl = -1000,
+				  		       .maxControl = 1000,
+							   .error = 0,
+				  		       .P_error = 0,
+				  		       .I_error = 0,
+				  		       .D_error = 0,
+				  		       .lastSensedOutput = 0,
+				  		       .timeStamp = 0},
+				  .pidSpeed = {.kp = 0.7,
+				    		   .ki = 0.7,
+							   .kd = 0.00,
+							   .minNormilized = 0,
+							   .maxNormilized = 1000,
+							   .minProcessVariable = -32000,
+							   .maxProcessVariable = 32000,
+							   .minControl = -1000,
+							   .maxControl = 1000,
+							   .error = 0,
+							   .P_error = 0,
+							   .I_error = 0,
+							   .D_error = 0,
+							   .lastSensedOutput = 0,
+							   .timeStamp = 0},
 				  .speed = &enc_1_speed,
 				  .position = &enc_1,
 				  .firstMove = COUNTERCLOCKWISE,
@@ -174,61 +176,206 @@ int main(void)
 
 
 	Axis Axis2 = {.shield = hBridge2,
-				  .position = &enc_2,
-				  .HomePort = IN_AXIS_2_HOME_GPIO_Port,
+			  	  .HomePort = IN_AXIS_2_HOME_GPIO_Port,
 				  .HomePin = IN_AXIS_2_HOME_Pin,
+				  .pidPos  =  {.kp = 0.80, // 5 (1) |
+				  			   .ki = 0.00,
+				  			   .kd = 0.00,
+				  			   .minNormilized = 0,
+				  			   .maxNormilized = 1000,
+				  			   .minProcessVariable = 0,
+				  			   .maxProcessVariable = 50000,
+				  			   .minControl = -1000,
+				  			   .maxControl = 1000,
+				  			   .error = 0,
+				  			   .P_error = 0,
+				  			   .I_error = 0,
+				  			   .D_error = 0,
+				  			   .lastSensedOutput = 0,
+				  			   .timeStamp = 0},
+				  .pidSpeed = {.kp = 1.5, //
+				  			   .ki = 0.60, // 0.625
+				  			   .kd = 0.00,
+				  			   .minNormilized = 0,
+				  			   .maxNormilized = 1000,
+				  			   .minProcessVariable = -32000,
+				  			   .maxProcessVariable = 32000,
+				  			   .minControl = -1000,
+				  			   .maxControl = 1000,
+				  			   .error = 0,
+				  			   .P_error = 0,
+				  			   .I_error = 0,
+				  			   .D_error = 0,
+				  			   .lastSensedOutput = 0,
+				  			   .timeStamp = 0},
+				  .speed = &enc_2_speed,
+				  .position = &enc_2,
 				  .firstMove = CLOCKWISE,
 				  .minSpeed = 60};
 
 	Axis Axis3 = {.shield = hBridge3,
-				  .position = &enc_3,
-				  .HomePort = IN_AXIS_3_HOME_GPIO_Port,
+			  	  .HomePort = IN_AXIS_3_HOME_GPIO_Port,
 				  .HomePin = IN_AXIS_3_HOME_Pin,
+				  .pidPos  =  {.kp = 0.25, // 0.70
+  				  			   .ki = 0.00,  // 0.65
+  				  			   .kd = 0.00,  // 0.30
+  				  			   .minNormilized = 0,
+  				  			   .maxNormilized = 1000,
+  				  			   .minProcessVariable = 0,
+  				  			   .maxProcessVariable = 20000,
+  				  			   .minControl = -1000,
+  				  			   .maxControl = 1000,
+  				  			   .error = 0,
+  				  			   .P_error = 0,
+  				  			   .I_error = 0,
+  				  			   .D_error = 0,
+  				  			   .lastSensedOutput = 0,
+  				  			   .timeStamp = 0},
+				  .pidSpeed = {.kp = 2.8,
+				  			   .ki = 0.45,
+				  			   .kd = 0.0,
+				  			   .minNormilized = 0,
+				  			   .maxNormilized = 1000,
+				  			   .minProcessVariable = -49000,
+				  			   .maxProcessVariable = 49000,
+				  			   .minControl = -1000,
+				  			   .maxControl = 1000,
+				  			   .error = 0,
+				  			   .P_error = 0,
+				  			   .I_error = 0,
+				  			   .D_error = 0,
+				  			   .lastSensedOutput = 0,
+				  			   .timeStamp = 0},
+				  .speed = &enc_3_speed,
+				  .position = &enc_3,
 				  .firstMove = CLOCKWISE,
-				  .minSpeed = 60};
-
-	Axis Axis4 = {.shield = hBridge4,
-				  .position = &enc_4,
-				  .HomePort = IN_AXIS_4_HOME_GPIO_Port,
-				  .HomePin = IN_AXIS_4_HOME_Pin,
-				  .firstMove = COUNTERCLOCKWISE,
 				  .minSpeed = 70};
 
-	//FindHomePosition(Axis4);
-	//FindHomePosition(Axis3);
-	//FindHomePosition(Axis2);
+	Axis Axis4 = {.shield = hBridge4,
+			      .HomePort = IN_AXIS_4_HOME_GPIO_Port,
+				  .HomePin = IN_AXIS_4_HOME_Pin,
+				  .pidPos  =  {.kp = 1.0,
+  				  			   .ki = 0.00,
+  				  			   .kd = 0.00,
+  				  			   .minNormilized = 0,
+  				  			   .maxNormilized = 1000,
+  				  			   .minProcessVariable = 0,
+  				  			   .maxProcessVariable = 10000,
+  				  			   .minControl = -1000,
+  				  			   .maxControl = 1000,
+  				  			   .error = 0,
+  				  			   .P_error = 0,
+  				  			   .I_error = 0,
+  				  			   .D_error = 0,
+  				  			   .lastSensedOutput = 0,
+  				  			   .timeStamp = 0},
+				  .pidSpeed = {.kp = 0.75,
+				  			   .ki = 0.625,
+				  			   .kd = 0.00,
+				  			   .minNormilized = 0,
+				  			   .maxNormilized = 1000,
+				  			   .minProcessVariable = -32000,
+				  			   .maxProcessVariable = 32000,
+				  			   .minControl = -1000,
+				  			   .maxControl = 1000,
+				  			   .error = 0,
+				  			   .P_error = 0,
+				  			   .I_error = 0,
+				  			   .D_error = 0,
+				  			   .lastSensedOutput = 0,
+				  			   .timeStamp = 0},
+				  .speed = &enc_4_speed,
+				  .position = &enc_4,
+				  .firstMove = COUNTERCLOCKWISE,
+				  .minSpeed = 65};
+
+	FindHomePosition(Axis3);
+	FindHomePosition(Axis2);
 	FindHomePosition(Axis1);
+	FindHomePosition(Axis4);
 
-	//Axis1: Max: 60000 | Axis2: Max: 50000 | Axis 3: Max: 12000 | Axis4: 20000
-	SetPoint RobotSetPoint = {30000, 25000, 6000, 10000};
+	HAL_GPIO_TogglePin(OUT_VALVE_GPIO_Port, OUT_VALVE_Pin);
 
-	//MoveToPosition(Axis1, RobotSetPoint.Axis1);
-	//MoveToPosition(Axis2, RobotSetPoint.Axis2);
-	//MoveToPosition(Axis3, RobotSetPoint.Axis3);
-	///MoveToPosition(Axis4, RobotSetPoint.Axis4);
+	//Axis1: Max: 60000 | Axis2: Max: 50000 | Axis 3: Max: 20000 | Axis4: 10000
+	SetPoint RobotSetPoint = {30000, 50000, 6000, 10000};
 
-	RobotSetPoint.Axis1 = 15000;
-	RobotSetPoint.Axis2 = 12000;
-	RobotSetPoint.Axis3 = 6000;
-	RobotSetPoint.Axis4 = 5000;
 
-	//MoveToPosition(Axis1, RobotSetPoint.Axis1);
-	//MoveToPosition(Axis2, RobotSetPoint.Axis2);
-	//MoveToPosition(Axis3, RobotSetPoint.Axis3);
-	///MoveToPosition(Axis4, RobotSetPoint.Axis4);
+
 
 
 	//SetOutputBTS2960(Axis4.shield, 70, COUNTERCLOCKWISE);
 
+int state = 1;
+
+
 	while (1) {
+		//HAL_GPIO_TogglePin(OUT_VALVE_GPIO_Port, OUT_VALVE_Pin);
 
-		MoveToPositionPID(&Axis1, 30000);
+		PrintPosition();
+
+		if (state == 1){
+			MoveToPositionPID(&Axis1, 12896);
+			if (ErrorIsZero(&Axis1, 50)){
+				state = 2;
+			}
+		}
+		if (state == 2){
+			MoveToPositionPID(&Axis2, 9684);
+			if (ErrorIsZero(&Axis2, 50)){
+				state = 3;
+			}
+		}
+		if (state == 3){
+			MoveToPositionPID(&Axis3, 5000);
+			if (ErrorIsZero(&Axis3, 1000)){
+				state = 4;
+			}
+		}
+
+		if (state == 4){
+			MoveToPositionPID(&Axis4, 1500);
+			if (ErrorIsZero(&Axis4, 15)){
+				state = 6;
+				HAL_GPIO_TogglePin(OUT_VALVE_GPIO_Port, OUT_VALVE_Pin);
+				HAL_Delay(1000);
+			}
+		}
+		if (state == 5){
+			MoveToPositionPID(&Axis3, 500);
+				if (ErrorIsZero(&Axis3, 50)){
+					state = 6;
+				}
+		}
+		if (state == 6){
+					MoveToPositionPID(&Axis1, 44045);
+					if (ErrorIsZero(&Axis1, 50)){
+						state = 7;
+					}
+				}
+
+		if (state == 7){
+					MoveToPositionPID(&Axis3, 18000);
+					if (ErrorIsZero(&Axis3, 2500)){
+						state = 8;
+					}
+				}
+		if (state == 8){
+			HAL_GPIO_TogglePin(OUT_VALVE_GPIO_Port, OUT_VALVE_Pin);
+			state = 9;
+		}
 
 
-/*
-	SetOutputBTS2960(axis1, i, CLOCKWISE);
-	HAL_GPIO_TogglePin(OUT_LED_GPIO_Port, OUT_LED_Pin);
-*/
+
+		//MoveToPosition(Axis4, 20000);
+
+
+
+
+	//SetOutputBTS2960(Axis4.shield, 80,COUNTERCLOCKWISE);
+
+
+		//HAL_GPIO_TogglePin(OUT_LED_GPIO_Port, OUT_LED_Pin);
+
 
 
     /* USER CODE END WHILE */
@@ -384,7 +531,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 36000-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 400-1;
+  htim2.Init.Period = 50-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -460,8 +607,8 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(OUT_LED_GPIO_Port, OUT_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin|OUT_AXIS_2_R_Pin
-                          |OUT_AXIS_4_R_Pin|OUT_AXIS_4_L_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, OUT_VALVE_Pin|OUT_AXIS_1_R_Pin|OUT_AXIS_1_L_Pin|OUT_AXIS_2_L_Pin
+                          |OUT_AXIS_2_R_Pin|OUT_AXIS_4_R_Pin|OUT_AXIS_4_L_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, OUT_AXIS_3_R_Pin|OUT_AXIS_3_L_Pin, GPIO_PIN_RESET);
@@ -496,6 +643,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : OUT_VALVE_Pin */
+  GPIO_InitStruct.Pin = OUT_VALVE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(OUT_VALVE_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : OUT_AXIS_1_R_Pin OUT_AXIS_1_L_Pin OUT_AXIS_2_L_Pin OUT_AXIS_2_R_Pin
                            OUT_AXIS_4_R_Pin OUT_AXIS_4_L_Pin */

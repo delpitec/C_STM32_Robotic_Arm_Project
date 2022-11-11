@@ -22,8 +22,9 @@ typedef struct PID{
 	const long int maxProcessVariable;
 	const long int minControl;
 	const long int maxControl;
-	int                P_error;
-	int                I_error;
+	int 			   error;
+	float                P_error;
+	float              I_error;
 	int                D_error;
 	unsigned int  	   lastSensedOutput;
 	unsigned long 	   timeStamp;

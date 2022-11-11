@@ -64,9 +64,9 @@ extern unsigned int enc_2;
 extern unsigned int enc_3;
 extern unsigned int enc_4;
 extern int enc_1_speed;
-extern unsigned int enc_2_speed;
-extern unsigned int enc_3_speed;
-extern unsigned int enc_4_speed;
+extern int enc_2_speed;
+extern int enc_3_speed;
+extern int enc_4_speed;
 
 /* USER CODE END EFP */
 
@@ -99,6 +99,8 @@ extern unsigned int enc_4_speed;
 #define IN_AXIS_2_HOME_GPIO_Port GPIOB
 #define IN_AXIS_4_HOME_Pin GPIO_PIN_10
 #define IN_AXIS_4_HOME_GPIO_Port GPIOB
+#define OUT_VALVE_Pin GPIO_PIN_11
+#define OUT_VALVE_GPIO_Port GPIOB
 #define OUT_AXIS_1_R_Pin GPIO_PIN_12
 #define OUT_AXIS_1_R_GPIO_Port GPIOB
 #define OUT_AXIS_1_L_Pin GPIO_PIN_13

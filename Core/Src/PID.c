@@ -41,26 +41,25 @@ void PrintParametersOverSerial(int err, int pid, int p,int i, int d){
 	);
 
 	HAL_UART_Transmit(&huart1, (unsigned char *)UartTX, strlen((const char *)UartTX), 500);
-	HAL_Delay(50);
 
 }
 
 int PIDController(PID *pid, int sensedOutput, int setPoint){
 
 	int PID = 0;
-	int error = 0;
+	//int error = 0;
 	float elapsedTime = 0.0;
 
 	// set error (normalized = 0 to 1000)
-	error = setPoint - sensedOutput;
+	pid->error = setPoint - sensedOutput;
 
 	// Time variables refresh
 	elapsedTime = (HAL_GetTick() - pid->timeStamp)/1000.0;
 	pid->timeStamp = HAL_GetTick();
 
 	// Refresh PID var errors
-	pid->P_error = error;
-	pid->I_error = (pid->I_error + (error * elapsedTime));
+	pid->P_error = pid->error;
+	pid->I_error = (pid->I_error + (pid->error * elapsedTime));
 	pid->D_error = (sensedOutput - pid->lastSensedOutput) / elapsedTime;
 
 	// Anti wideup (max +/- 1000)
@@ -91,7 +90,7 @@ int PIDController(PID *pid, int sensedOutput, int setPoint){
 		;
 	}
 
-	PrintParametersOverSerial(error, PID, (pid->kp * pid->P_error) ,(pid->ki * pid->I_error), (pid->kd * pid->D_error));
+	PrintParametersOverSerial(pid->error, PID, (pid->kp * pid->P_error) ,(pid->ki * pid->I_error), (pid->kd * pid->D_error));
 
 	return PID;
 }

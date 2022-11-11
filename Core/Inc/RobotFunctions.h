@@ -30,7 +30,8 @@ typedef struct SETPOINT{
 void FindHomePosition(Axis axis);
 void MoveToPosition(Axis axis, unsigned int setPoint);
 void MoveToPositionPID(Axis *axis, unsigned int setPoint);
-
+int ErrorIsZero(Axis *axis, unsigned int errorMargin);
+void PrintPosition();
 
 
 #endif /* INC_ROBOTFUNCTIONS_H_ */
